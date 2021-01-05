@@ -1,8 +1,17 @@
 {% include 'inc/header.html' %}
 
-<form method="post" action="/add">
-    <label for="id">Component ID</label>
-    <input name="id" id="id"></input>
+{% if added %}
+<p>IT GOT ADDED! :D</p>
+{% endif %}
+
+<form method="post" action="/addtodb">
+    {% for header in component_headers %}
+    {% if not "Entry Date" in header and not "Updated Date" in header %}
+        <label for="{{ header }}">{{ header }}</label>
+        <input name="{{ header }}" id="{{ header }}">
+    {% endif %}
+    {% endfor %}
+
     <button type="submit">Submit</button>
 </form>
 

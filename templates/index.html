@@ -1,9 +1,94 @@
 {% include 'inc/header.html' %}
 
-<form method="post" action="/update">
-    <label for="id">Component ID</label>
-    <input name="id" id="id"></input>
-    <button type="submit">Submit</button>
-</form>
+<main class="flex-shrink-0">
+  <div class="container">
+      <div class="row">
+          <div class="col-">
+              <table>
+                  <tr>
+                      {% for header in table_headers %}
+                      <th>{{ header }}</th>
+                      {% endfor %}
+                  </tr>
+
+                  {% for row in table_components %}
+                  <tr>
+                      {% for cell in row[1:] %}
+                      <td>{{ cell }}</td>
+                      {% endfor %}
+                      <td>
+                        <button type="button" id="componentEditButton" class="btn btn-primary" data-bs-toggle="modal" data-component="{{ row }}" data-bs-target="#componentEditModal">
+                            Edit Component
+                        </button>
+                      </td>
+                  </tr>
+
+                  {% endfor %}
+
+
+              </table>
+          </div>
+      </div>
+  </div>
+</main>
+
+
+
+<!-- Edit Component Modal -->
+<div class="modal fade" id="componentEditModal" tabindex="-1" role="dialog" aria-labelledby="componentEditModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="componentEditModalLongTitle">Modal title</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <form action="/updatecomponent" method="post">
+          <div class="modal-body">
+              <input type="text" name="componentID" id="componentID" value="" readonly>
+              {% for header in table_headers %}
+              {%- if header == "Entry Date" -%}
+              <input type="text" name="componentEntryDate" id="componentEntryDate" value="">"
+              {%- elif header == "Updated Date" %}
+              <input type="text" name="componentUpdatedDate" id="componentUpdatedDate" value="">"
+              {% else -%}
+              <input type="text" name="component{{ header }}" id="component{{ header }}" value="">
+              {% endif -%}
+              {% endfor -%}
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+          </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+$( document ).ready(function() {
+// Nothing here at the moment
+});
+
+$(document).on("click", "#componentEditButton", function () {
+     var componentData = $(this).data('component').split(",");
+     console.log(componentData);
+     $(".modal-body #componentID").val(componentData[0].replace("[ObjectId('","").slice(0, -2));
+     $(".modal-body #componentName").val(componentData[1]);
+     $(".modal-body #componentLocation").val(componentData[2]);
+     $(".modal-body #componentFootprint").val(componentData[3]);
+     $(".modal-body #componentAmount").val(componentData[4]);
+     $(".modal-body #componentDatasheet").val(componentData[5]);
+     $(".modal-body #componentEntryDate").val(componentData[6]);
+     $(".modal-body #componentUpdatedDate").val(componentData[7]);
+     $(".modal-body #componentComment").val(componentData[8]);
+});
+</script>
+
 
 {% include 'inc/footer.html' %}

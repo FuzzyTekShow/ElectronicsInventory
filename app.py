@@ -19,10 +19,22 @@ client = MongoClient('mongodb://localhost:27017/')
 db = client["electronics_inventory"]
 components_col = db["components"]
 
+component_headers = ("Name", "Description", "Location", "Footprint", "Amount",
+                     "Datasheet", "Entry Date", "Updated Date", "Comment")
+
+
+def get_component_data():
+    table_components = []
+
+    for component in components_col.find():
+        table_components.append(list(component.values()))
+
+    return table_components
+
 
 @app.route('/')
 def index():
-    return render_template('index.html', config=config)
+    return render_template('index.html', config=config, table_headers=component_headers, table_components=get_component_data())
 
 
 @app.route('/error/<string:e>')
@@ -30,17 +42,21 @@ def error(e):
     return render_template('error.html', error=e)
 
 
-@app.route('/add', methods=['POST'])
-def addItem():
+@app.route('/addtodb', methods=['POST'])
+def addToDb():
     data = request.form
     date = datetime.datetime.now()
-    component_to_add = {"name": data['name'], "description": data['description'], "location": data['location'], "footprint": data['footprint'],
-                        "amount": data['amount'], "datasheet": data['datasheet'], "entry_date": date, "updated_date": date,
-                        "comment": data['comment']}
 
+    component_to_add = {"name": data['Name'], "description": data['Description'], "location": data['Location'], "footprint": data['Footprint'],
+                        "amount": data['Amount'], "datasheet": data['Datasheet'], "entry_date": date, "updated_date": date,
+                        "comment": data['Comment']}
     x = components_col.insert_one(component_to_add)
-    print("Item added: {}".format(x.inserted_id))
-    return index()
+    return addComponentPage(True)
+
+
+@app.route('/addcomponent')
+def addComponentPage(isAdded = None):
+    return render_template('add.html', config=config, component_headers=component_headers, added=isAdded)
 
 
 @app.route('/remove', methods=['POST'])
