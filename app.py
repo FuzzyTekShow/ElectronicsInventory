@@ -19,7 +19,7 @@ client = MongoClient('mongodb://localhost:27017/')
 db = client["electronics_inventory"]
 components_col = db["components"]
 
-component_headers = ("Name", "Description", "Location", "Footprint", "Amount",
+component_headers = ("Name", "Location", "Footprint", "Amount",
                      "Datasheet", "Entry Date", "Updated Date", "Comment")
 
 
@@ -49,7 +49,7 @@ def addToDb():
     data = request.form
     date = datetime.datetime.now()
 
-    component_to_add = {"name": data['Name'], "description": data['Description'], "location": data['Location'], "footprint": data['Footprint'],
+    component_to_add = {"name": data['Name'], "location": data['Location'], "footprint": data['Footprint'],
                         "amount": data['Amount'], "datasheet": data['Datasheet'], "entry_date": date, "updated_date": date,
                         "comment": data['Comment']}
     x = components_col.insert_one(component_to_add)
@@ -75,7 +75,6 @@ def updateItem():
     x = components_col.find_one_and_update({'_id': ObjectId(data['id'])},
                               {"$set": {
                                   "name": data['name'],
-                                  "description": data['description'],
                                   "location": data['location'],
                                   "footprint": data['footprint'],
                                   "amount": data['amount'],
