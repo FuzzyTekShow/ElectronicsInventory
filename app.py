@@ -27,6 +27,8 @@ def get_component_data():
     table_components = []
 
     for component in components_col.find():
+        component['entry_date'] = component['entry_date'].strftime(config['userSettings']['dateFormat'])
+        component['updated_date'] = component['updated_date'].strftime(config['userSettings']['dateFormat'])
         table_components.append(list(component.values()))
 
     return table_components

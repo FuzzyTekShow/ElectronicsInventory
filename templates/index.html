@@ -18,7 +18,7 @@
                       {% endfor %}
                       <td>
                         <button type="button" id="componentEditButton" class="btn btn-primary" data-bs-toggle="modal" data-component="{{ row }}" data-bs-target="#componentEditModal">
-                            Edit Component
+                            Edit
                         </button>
                       </td>
                   </tr>
@@ -39,7 +39,7 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="componentEditModalLongTitle">Modal title</h5>
+        <h5 class="modal-title" id="componentEditModalLongTitle">Edit Component</h5>
         <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -47,14 +47,44 @@
 
       <form action="/updatecomponent" method="post">
           <div class="modal-body">
-              <input type="text" name="componentID" id="componentID" value="" readonly>
+              <div class="form-group">
+                  <label for="componentID">Database ID</label>
+                  <input type="text" name="componentID" id="componentID" value="" readonly disabled>
+              </div>
               {% for header in table_headers %}
               {%- if header == "Entry Date" -%}
-              <input type="text" name="componentEntryDate" id="componentEntryDate" value="">"
+              <div class="form-group">
+                  <label for="componentEntryDate">Entry Date</label>
+                  <input type="text" name="componentEntryDate" id="componentEntryDate" value="" readonly disabled>
+              </div>
               {%- elif header == "Updated Date" %}
-              <input type="text" name="componentUpdatedDate" id="componentUpdatedDate" value="">"
+              <div class="form-group">
+                  <label for="componentUpdatedDate">Last Updated</label>
+                  <input type="text" name="componentUpdatedDate" id="componentUpdatedDate" value="" readonly disabled>
+              </div>
+              {%- elif header == "Datasheet" %}
+              <div class="form-group">
+                  <label for="componentDatasheet">Datasheet</label>
+                  <input type="text" name="componentDatasheet" id="componentDatasheet" value="">
+                  <div id="editDatasheetLinks">
+                    <a href="#" id="uploadDatasheetLink">Upload</a> | <a href="#" id="deleteDatasheetLink">Delete</a>
+                  </div>
+              </div>
+              {%- elif header == "Description" %}
+               <div class="form-group">
+                   <label for="componentDescription">Description</label>
+                   <textarea type="text" name="componentDescription" id="componentDescription" value=""></textarea>
+              </div>
+              {%- elif header == "Comment" %}
+               <div class="form-group">
+                   <label for="componentComment">Comments</label>
+                   <textarea type="text" name="componentComment" id="componentComment" value=""></textarea>
+              </div>
               {% else -%}
-              <input type="text" name="component{{ header }}" id="component{{ header }}" value="">
+              <div class="form-group">
+                  <label for="component{{ header }}">{{ header }}</label>
+                  <input type="text" name="component{{ header }}" id="component{{ header }}" value="">
+              </div>
               {% endif -%}
               {% endfor -%}
           </div>
@@ -77,16 +107,16 @@ $( document ).ready(function() {
 
 $(document).on("click", "#componentEditButton", function () {
      var componentData = $(this).data('component').split(",");
-     console.log(componentData);
      $(".modal-body #componentID").val(componentData[0].replace("[ObjectId('","").slice(0, -2));
-     $(".modal-body #componentName").val(componentData[1]);
-     $(".modal-body #componentLocation").val(componentData[2]);
-     $(".modal-body #componentFootprint").val(componentData[3]);
-     $(".modal-body #componentAmount").val(componentData[4]);
-     $(".modal-body #componentDatasheet").val(componentData[5]);
-     $(".modal-body #componentEntryDate").val(componentData[6]);
-     $(".modal-body #componentUpdatedDate").val(componentData[7]);
-     $(".modal-body #componentComment").val(componentData[8]);
+     $(".modal-body #componentName").val(componentData[1].slice(2,-1));
+     $(".modal-body #componentDescription").val(componentData[2].slice(2,-1));
+     $(".modal-body #componentLocation").val(componentData[3].slice(2,-1));
+     $(".modal-body #componentFootprint").val(componentData[4].slice(2,-1));
+     $(".modal-body #componentAmount").val(componentData[5].slice(2,-1));
+     $(".modal-body #componentDatasheet").val(componentData[6].slice(2,-1));
+     $(".modal-body #componentEntryDate").val(componentData[7].slice(2,-1));
+     $(".modal-body #componentUpdatedDate").val(componentData[8].slice(2,-1));
+     $(".modal-body #componentComment").val(componentData[9].slice(2,-2));
 });
 </script>
 
