@@ -44,46 +44,48 @@ def error(e):
     return render_template('error.html', error=e)
 
 
-@app.route('/addtodb', methods=['POST'])
-def addToDb():
-    data = request.form
-    date = datetime.datetime.now()
-
-    component_to_add = {"name": data['Name'], "location": data['Location'], "footprint": data['Footprint'],
-                        "amount": data['Amount'], "datasheet": data['Datasheet'], "entry_date": date, "updated_date": date,
-                        "comment": data['Comment']}
-    x = components_col.insert_one(component_to_add)
-    return addComponentPage(True)
-
-
-@app.route('/addcomponent')
-def addComponentPage(isAdded = None):
-    return render_template('add.html', config=config, component_headers=component_headers, added=isAdded)
+@app.route('/add', methods=['POST'])
+def add():
+    try:
+        data = request.form
+        date = datetime.datetime.now()
+        component_to_add = {"name": data['name'], "location": data['location'], "footprint": data['footprint'],
+                            "amount": data['amount'], "datasheet": data['datasheet'], "entry_date": date, "updated_date": date,
+                            "comment": data['comment']}
+        result = components_col.insert_one(component_to_add)
+        return str(result.acknowledged)
+    except Exception as e:
+        return e
 
 
 @app.route('/remove', methods=['POST'])
-def removeItem():
-    data = request.form
-    x = components_col.remove(ObjectId(data['id']))
-    return index()
+def remove():
+    try:
+        data = request.form
+        result = components_col.remove(ObjectId(data['id']))
+        return result
+    except Exception as e:
+        return e
 
 
 @app.route('/update', methods=['POST'])
-def updateItem():
+def update():
     data = request.form
     date = datetime.datetime.now()
-    x = components_col.find_one_and_update({'_id': ObjectId(data['id'])},
+    try:
+        result = components_col.find_one_and_update({'_id': ObjectId(data['id'])},
                               {"$set": {
                                   "name": data['name'],
                                   "location": data['location'],
                                   "footprint": data['footprint'],
                                   "amount": data['amount'],
                                   "datasheet": data['datasheet'],
-                                  "entry_date": data['entry_date'],
                                   "updated_date": date,
                                   "comment": data['comment']
                               }})
-    return index()
+        return result
+    except Exception as e:
+        return e
 
 
 if __name__ == "__main__":

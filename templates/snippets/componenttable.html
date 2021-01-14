@@ -1,6 +1,6 @@
   <div class="container">
       <div class="row">
-          <div class="table-responsive">
+          <div class="table-responsive" id="componentTable">
               <table class="table table-striped text-center align-middle">
                   <thead>
                       <tr>
@@ -17,7 +17,7 @@
                           {% endfor %}
                           <td>
                             <button type="button" id="componentEditButton" class="btn btn-primary" data-bs-toggle="modal" data-component="{{ row }}" data-bs-target="#componentEditModal">
-                                Edit
+                                <i class="bi bi-pencil-fill"></i> Edit
                             </button>
                           </td>
                       </tr>
