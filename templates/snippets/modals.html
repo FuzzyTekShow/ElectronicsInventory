@@ -10,7 +10,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
-      <form action="/add" method="post" id="addComponentForm">
+      <form action="/add" method="post" enctype="multipart/form-data" id="addComponentForm">
           <div class="modal-body">
             <div class="container">
                 <!-- Row 1 -->
@@ -54,17 +54,23 @@
                     <div class="col-md-4">
                         <div class="form-group">
                           <label for="newComponentDatasheet">Datasheet</label>
-                          <input type="text" name="datasheet" id="newComponentDatasheet" value="" class="form-control">
+                            <span id="datasheetMethod">
+                                <!-- The following line gets replaced depending on a radio button -->
+                                <input type="text" name="datasheet" id="newComponentDatasheet" value="" class="form-control">
+                            </span>
+
                         </div>
                     </div>
 
                     <!-- Column 3 -->
                     <div class="col-md-4">
-                        <div id="addDatasheetLinks" class="d-flex align-items-end justify-content-evenly">
-                            <button type="button" id="addUploadDatasheetButton" class="btn btn-primary"><i class="bi bi-upload"></i> Upload</button>
-                            <button type="button" id="addDeleteDatasheetButton" class="btn btn-danger"><i class="bi bi-trash"></i> Delete</button>
+                        <div id="addDatasheetLinks" class="d-flex align-items-end justify-content-evenly form-group">
+                                <input type="radio" class="btn-check form-control" name="datasheetType" id="datasheetToggle_upload" autocomplete="off">
+                                <label class="btn btn-primary" for="datasheetToggle_upload"><i class='bi bi-upload'></i> Upload</label>
+
+                                <input type="radio" class="btn-check form-control" name="datasheetType" id="datasheetToggle_url" autocomplete="off">
+                                <label class="btn btn-primary" for="datasheetToggle_url"><i class='bi bi-link'></i> URL</label>
                         </div>
-                    </div>
                 </div>
 
                 <div class="row">
@@ -83,8 +89,8 @@
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-circle"></i> Cancel</button>
             <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Save & Add</button>
           </div>
+      </div>
       </form>
-
     </div>
   </div>
 </div>
@@ -98,7 +104,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
-      <form action="/update" method="post">
+      <form action="/update" method="post" enctype=multipart/form-data id="editComponentForm">
           <div class="modal-body">
             <div class="container">
                 <!-- Row 1 -->

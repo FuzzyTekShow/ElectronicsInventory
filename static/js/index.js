@@ -26,23 +26,60 @@ $(document).on("click", "#componentRemoveButton", function () {
       });
 });
 
+// Datasheet button on add component modal
+
+// File lines
+const uploadHTML = "<input type=\"file\" name=\"datasheetUpload\" id=\"newComponentDatasheet\" class=\"form-control\" accept=\".pdf,.doc,.docx,.txt,.rtf\">";
+const linkHTML = "<input type=\"text\" name=\"datasheetLink\" id=\"newComponentDatasheet\" class=\"form-control\">";
+
+$(document).on('change', 'input:radio[id^="datasheetToggle_"]', function (event) {
+    if(event.target.id == "datasheetToggle_upload")
+        $("#datasheetMethod").html(uploadHTML);
+    else
+        $("#datasheetMethod").html(linkHTML);
+});
+
 // Add component form
 $('#addComponentForm').submit(function(e) {
 
     e.preventDefault();
-
-    var formData = $('#addComponentForm').serialize();
+    var formData = new FormData(this);
+    //formData.append('file', $('#datasheetUpload').prop('files')[0]);
 
     $.ajax({
         type : 'POST',
         url : '/add',
-        data : formData
+        data : formData,
+        cache: false,
+        contentType: false,
+        processData: false
     })
     .done(function(data) {
        if (data == "True"){
         displayModal("componentAddModal", false, true, 2000, "Component has been added.");
        }else{
         displayModal("componentAddModal", true, false, 0, data);
+       }
+    });
+});
+
+// Edit component form
+$('#editComponentForm').submit(function(e) {
+
+    e.preventDefault();
+
+    var formData = $('#editComponentForm').serialize();
+
+    $.ajax({
+        type : 'POST',
+        url : '/update',
+        data : formData
+    })
+    .done(function(data) {
+       if (data == "True"){
+        displayModal("componentEditModal", false, true, 2000, "Component has been updated.");
+       }else{
+        displayModal("componentEditModal", true, false, 0, data);
        }
     });
 });
@@ -55,7 +92,6 @@ function displayModal(currentModal, isError, isTimeout, timeoutLength, modalMess
 
     var currentModalElement = document.getElementById(currentModal);
     var current = bootstrap.Modal.getInstance(currentModalElement);
-    current.hide();
 
     if (isError){
         errorModal.show();
@@ -66,6 +102,7 @@ function displayModal(currentModal, isError, isTimeout, timeoutLength, modalMess
                 }, timeoutLength);
         }
     }else{
+        current.hide();
         $("#componentTable").load(location.href+" #componentTable>*","");
         successModal.show();
         $("#successModalBody #modalSuccessMessage").html(modalMessage);
